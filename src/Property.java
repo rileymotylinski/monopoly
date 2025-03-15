@@ -13,18 +13,16 @@ public class Property extends Space {
     }
     @Override
     public boolean onLand(Player p, Monopoly g){
-        if (g.isInJail(this.owner)) {
+        if (this.owner == null) {
+            System.out.println("would you like to buy this property? (y/n) : ");
+            g.updateBoardProperty(p.buy(this));
+        } else if (g.isInJail(this.owner)) {
+            System.out.println(this.owner.getName() + " is currently in jail. You don't have to pay them rent.");
             return true;
-        }
-        if (!this.isAvaliable() && this.owner != p) {
+        } else if (!this.isAvaliable() && this.owner != p) {
             System.out.println("You have to pay rent to " + g.getPropertyOwner(this));
             // update balances of both players
             g.updatePlayer(p.payRent(this,this.owner));
-        } else if (this.owner == null){
-
-            System.out.println("would you like to buy this property? (y/n) : ");
-            Monopoly.board[p.getPos()] = p.buy(this);
-
         } else {
             System.out.println("You own this property");
         }
