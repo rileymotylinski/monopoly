@@ -1,4 +1,15 @@
-package PACKAGE_NAME;
+import java.util.ArrayList;
 
-public class Jail {
+public class Jail extends Space {
+    public Jail(){
+        super("jail","jail");
+    }
+
+   @Override
+    public boolean onLand(Player p, Monopoly g) {
+        g.jail(p);
+        return true;
+    }
+
+
 }
