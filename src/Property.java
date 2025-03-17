@@ -70,7 +70,15 @@ public class Property extends Space {
         } else if (!this.isAvaliable() && this.owner != p) {
             System.out.println("You have to pay rent to " + g.getPropertyOwner(this));
             // update balances of both players
-            g.updatePlayer(p.payRent(this,this.owner));
+            if (p.getBalance() < this.rent){
+                // bankruptcy
+                // updating gamestate
+                p.triggerBankruptcy(g);
+                // mortgaging properties?
+            } else {
+                g.updatePlayer(p.payRent(this,this.owner));
+            }
+
         } else {
             System.out.println("You own this property");
         }
@@ -78,14 +86,7 @@ public class Property extends Space {
     }
 
 
-    private boolean isInteger(String s){
-        try {
-            Integer.parseInt(s);
-            return true;
-        } catch (NumberFormatException n) {
-            return false;
-        }
-    }
+
     public int getPrice() {
         return this.price;
     }
@@ -98,9 +99,9 @@ public class Property extends Space {
         return this.owner == null;
     }
 
-    public boolean setOwner(Player p){
+    public Property setOwner(Player p){
         this.owner = p;
-        return true;
+        return this;
     }
 
 

@@ -1,16 +1,13 @@
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOError;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
+import java.util.*;
 
 
 public class Monopoly {
 
     public Space[] board;
+    public Property[] boardProperties;
 
     public Map<String, Player> players;
     public Map<String, Integer> jailPlayers;
@@ -24,7 +21,10 @@ public class Monopoly {
         }
         try {
             FileReader filereader = new FileReader(csvFilePath);
-            this.board = Property.instantiateProperties(filereader);
+            // need to add jail/go to jail etc.
+            Property[] parsedProperties = Property.instantiateProperties(filereader);
+            this.board = parsedProperties;
+            this.boardProperties = parsedProperties;
         } catch (FileNotFoundException f) {
             System.out.println("There was no csv file provided!");
         }
@@ -65,6 +65,8 @@ public class Monopoly {
     public void simulateTurn(){
         // updating players in jail
         Map<String, Integer> jp = new HashMap<>();
+        ArrayList<Player> bankruptPlayers = new ArrayList<>();
+
         jailPlayers.forEach( (play, turns) -> {
             if (turns > 0) {
                 jp.put(play,turns - 1);
@@ -83,6 +85,14 @@ public class Monopoly {
                 System.out.println("\n");
                 continue;
             }
+            // remove from game if player is bankrupt
+            // can't do it while the for loop is happening otherwise it throws a concurrent modification exception
+            if(currentPlayer.isBankrupt()){
+                bankruptPlayers.add(currentPlayer);
+                continue;
+            }
+
+
 
             // moving
             currentPlayer.movePlayer(this.board);
@@ -97,7 +107,15 @@ public class Monopoly {
 
         }
 
+        for (Player p : bankruptPlayers){
+            this.players.remove(p.getName());
+        }
+
     }
+
+
+    // GAMESTATE METHODS
+
 
     // put a player in jail
     public boolean jail(Player p){
@@ -113,4 +131,7 @@ public class Monopoly {
     public String getPropertyOwner(Property p){
         return p.getOwner().getName();
     }
+
+
+
 }

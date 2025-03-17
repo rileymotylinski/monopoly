@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Map;
 
@@ -6,6 +8,7 @@ public class Player {
     private int pos;
     private int money;
     private boolean isBankrupt;
+    private ArrayList<Property> ownedProperties;
 
 
     public Player(String name){
@@ -13,6 +16,7 @@ public class Player {
         this.pos = 0;
         this.money = 5000;
         this.isBankrupt = false;
+        this.ownedProperties = new ArrayList<>();
 
     }
 
@@ -53,16 +57,21 @@ public class Player {
 
     }
 
+    public boolean triggerBankruptcy(Monopoly g){
+        for (Property p : this.ownedProperties){
+            Property updatedProperty = p.setOwner(null);
+            g.updateBoardProperty(updatedProperty);
+        }
+        this.isBankrupt = true;
+        return true;
+    }
+
 
 
     // spend some money
     public boolean spend(int amount){
         this.money = this.money - amount;
         System.out.println("Spent " + amount + " dollars. You now have " + this.money + " dollars");
-        if(this.money < 0){
-            this.isBankrupt = true;
-            System.out.println("You are bankrupt!");
-        }
         return true;
 
 
@@ -84,8 +93,10 @@ public class Player {
             return prop;
         }
 
+        // buying property
+        // automatically buying if you have the money - is that really the best strategy?
         if (prop.isAvaliable()){
-
+            this.ownedProperties.add(prop);
             this.spend(prop.getPrice());
             prop.setOwner(this);
 
@@ -101,8 +112,13 @@ public class Player {
         return true;
     }
 
+    public boolean isBankrupt(){
+        return this.isBankrupt;
+    }
+
     public Player payRent(Property p, Player owner){
         if (!this.haveMoney(p.getPrice())){
+            // bankruptcy!
             return owner;
         }
         this.spend(p.getRent());
