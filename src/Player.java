@@ -56,7 +56,6 @@ public class Player {
 
 
     // spend some money
-    // remember to handle event were they don't have
     public boolean spend(int amount){
         this.money = this.money - amount;
         System.out.println("Spent " + amount + " dollars. You now have " + this.money + " dollars");

@@ -30,4 +30,8 @@ public abstract class Space {
     public String toString() {
         return this.title;
     }
+    protected boolean setName(String newName){
+        this.title = newName;
+        return true;
+    }
 }
