@@ -7,8 +7,8 @@ public abstract class Space {
         if (type.equals("property")) {
             this.type = "property";
 
-        } else if (type.equals("go to jail")) {
-            this.type = "go to jail";
+        } else if (type.equals("ToJail")) {
+            this.type = "ToJail";
         }
         else if (type.equals("jail")) {
             this.type = "jail";

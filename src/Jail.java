@@ -7,7 +7,6 @@ public class Jail extends Space {
 
    @Override
     public boolean onLand(Player p, Monopoly g) {
-        g.jail(p);
         return true;
     }
 

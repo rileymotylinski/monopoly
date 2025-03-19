@@ -29,6 +29,16 @@ public class Player {
     public int getPos() {
         return this.pos;
     }
+    public String displayProperties(){
+        String properties = "{\n";
+
+        for(Property p : this.ownedProperties){
+            properties = properties.concat("\t" + p.getName() + "\n");
+        }
+
+        return properties.concat("}");
+    }
+
 
 
     public int movePlayer(Space[] board){
@@ -57,14 +67,11 @@ public class Player {
 
     }
 
-    public boolean triggerBankruptcy(Monopoly g){
-        for (Property p : this.ownedProperties){
-            Property updatedProperty = p.setOwner(null);
-            g.updateBoardProperty(updatedProperty);
-        }
+    public boolean triggerBankruptcy(){
         this.isBankrupt = true;
         return true;
     }
+
 
 
 
@@ -79,11 +86,15 @@ public class Player {
 
     public boolean haveMoney(int amount) {
         if (this.money < amount) {
-            System.out.println("you don't have enough money");
+            this.triggerBankruptcy();
+
+            System.out.println("YOU ARE BANKRUPT");
             return false;
         }
         return true;
     }
+
+
 
 
 
@@ -107,6 +118,10 @@ public class Player {
 
     }
 
+    public ArrayList<Property> getOwnedProperties(){
+        return this.ownedProperties;
+    }
+
     private boolean giveMoney(int amount){
         this.money += amount;
         return true;
@@ -118,12 +133,17 @@ public class Player {
 
     public Player payRent(Property p, Player owner){
         if (!this.haveMoney(p.getPrice())){
-            // bankruptcy!
-            return owner;
+            this.triggerBankruptcy();
+        } else {
+            this.spend(p.getRent());
+            owner.giveMoney(p.getRent());
         }
-        this.spend(p.getRent());
-        owner.giveMoney(p.getRent());
         return owner;
+
+    }
+    public boolean setPos(int newPosition){
+        this.pos = newPosition;
+        return true;
     }
 
 }

@@ -11,6 +11,7 @@ public class Property extends Space {
     private int rent;
     private boolean isSold;
     private Player owner;
+    private String color;
 
     public Property(String name, int price, int rent){
         super("property", name);
@@ -44,10 +45,12 @@ public class Property extends Space {
                 String name = sL[0];
                 String price = sL[1];
                 String rent = sL[2];
+                String color = sL[3];
                 //CSV file MUST be formatted : Name, cost, rent
-                p.setName(sL[0]);
-                p.setPrice(Integer.parseInt(sL[1]));
-                p.setRent(Integer.parseInt(sL[2]));
+                p.setName(name);
+                p.setPrice(Integer.parseInt(price));
+                p.setRent(Integer.parseInt(rent));
+                p.setColor(color);
 
                 properties.add(p);
             }
@@ -70,14 +73,10 @@ public class Property extends Space {
         } else if (!this.isAvaliable() && this.owner != p) {
             System.out.println("You have to pay rent to " + g.getPropertyOwner(this));
             // update balances of both players
-            if (p.getBalance() < this.rent){
-                // bankruptcy
-                // updating gamestate
-                p.triggerBankruptcy(g);
-                // mortgaging properties?
-            } else {
-                g.updatePlayer(p.payRent(this,this.owner));
-            }
+
+
+            g.updatePlayer(p.payRent(this,this.owner));
+
 
         } else {
             System.out.println("You own this property");
@@ -107,6 +106,11 @@ public class Property extends Space {
 
     private boolean setPrice(int newPrice){
         this.price = newPrice;
+        return true;
+    }
+
+    private boolean setColor(String newColor){
+        this.color = newColor;
         return true;
     }
 
